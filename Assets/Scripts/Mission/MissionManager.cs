@@ -19,5 +19,14 @@ namespace BASimulator.Mission
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
+
+        /// <summary>
+        /// Completes an objective by index.
+        /// </summary>
+        public void CompleteObjective(int index)
+        {
+            Debug.Log($"[MissionManager] Objective {index} completed!");
+            // Implementation logic for missions would go here
+        }
     }
 }

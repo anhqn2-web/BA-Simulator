@@ -1,15 +1,22 @@
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using BASimulator.Mission;
 
 public class WorkstationUI : MonoBehaviour
 {
-    [Header("Panels trong Workstation")]
+    [Header("Main Panels")]
     public GameObject workstationPanel;
     public GameObject desktopPanel;
     public GameObject outlookPanel;
-    public GameObject emailContentPanel;
+    public GameObject jiraPanel;
+    public GameObject confluencePanel;
 
-    [Header("Tham chiếu Mission")]
-    public MissionManager missionManager;
+    [Header("App Managers")]
+    public OutlookManager outlookManager;
+
+    [Header("Confluence Components")]
+    public TMP_InputField documentEditor;
 
     public bool IsOpen => workstationPanel != null && workstationPanel.activeSelf;
 
@@ -23,14 +30,13 @@ public class WorkstationUI : MonoBehaviour
         if (workstationPanel == null) return;
 
         workstationPanel.SetActive(true);
-        if (desktopPanel != null) desktopPanel.SetActive(true);
-        if (outlookPanel != null) outlookPanel.SetActive(false);
-        if (emailContentPanel != null) emailContentPanel.SetActive(false);
+        ShowPanel(desktopPanel);
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        if (missionManager != null) missionManager.CompleteObjective(0);
+        if (MissionManager.Instance != null)
+            MissionManager.Instance.CompleteObjective(0);
     }
 
     public void CloseWorkstation()
@@ -41,15 +47,34 @@ public class WorkstationUI : MonoBehaviour
         Cursor.visible = false;
     }
 
-    public void OpenOutlook()
+    public void ShowPanel(GameObject panelToShow)
     {
-        if (outlookPanel != null) outlookPanel.SetActive(true);
-        if (missionManager != null) missionManager.CompleteObjective(1);
+        if (desktopPanel != null) desktopPanel.SetActive(desktopPanel == panelToShow);
+        if (outlookPanel != null) outlookPanel.SetActive(outlookPanel == panelToShow);
+        if (jiraPanel != null) jiraPanel.SetActive(jiraPanel == panelToShow);
+        if (confluencePanel != null) confluencePanel.SetActive(confluencePanel == panelToShow);
     }
 
-    public void ReadClientEmail()
+    public void OpenOutlook()
     {
-        if (emailContentPanel != null) emailContentPanel.SetActive(true);
-        if (missionManager != null) missionManager.CompleteObjective(2);
+        ShowPanel(outlookPanel);
+        if (outlookManager != null) outlookManager.RefreshEmailList();
+
+        if (MissionManager.Instance != null)
+            MissionManager.Instance.CompleteObjective(1);
+    }
+
+    public void OpenJira() => ShowPanel(jiraPanel);
+    public void OpenConfluence() => ShowPanel(confluencePanel);
+    public void OpenDesktop() => ShowPanel(desktopPanel);
+
+    public void SaveDocument()
+    {
+        Debug.Log("Document Saved: " + documentEditor.text);
+    }
+
+    public void SubmitDocument()
+    {
+        Debug.Log("Document Submitted: " + documentEditor.text);
     }
 }

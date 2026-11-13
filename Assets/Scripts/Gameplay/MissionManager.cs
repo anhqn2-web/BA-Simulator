@@ -3,6 +3,8 @@ using TMPro;
 
 public class MissionManager : MonoBehaviour
 {
+    public static MissionManager Instance;
+
     [Header("Tham chiếu hệ thống")]
     public ExperienceManager experienceManager;
     public TextMeshProUGUI missionText;
@@ -21,6 +23,11 @@ public class MissionManager : MonoBehaviour
     private bool[] completedObjectives = new bool[3];
     private bool isMissionCompleted = false;
 
+    void Awake()
+    {
+        Instance = this;
+    }
+
     void Start()
     {
         UpdateMissionUI();
@@ -32,6 +39,8 @@ public class MissionManager : MonoBehaviour
         if (completedObjectives[index]) return;
 
         completedObjectives[index] = true;
+        Debug.Log($"Hoàn thành mục tiêu {index}: {objectives[index]}");
+
         CheckMissionCompletion();
         UpdateMissionUI();
     }
@@ -56,7 +65,7 @@ public class MissionManager : MonoBehaviour
 
         if (isMissionCompleted)
         {
-            missionText.text = $"<color=#4CAF50>[Completed] {missionTitle} (+{rewardEXP} EXP)</color>";
+            missionText.text = $"<color=#2E7D32>[Completed] {missionTitle} (+{rewardEXP} EXP)</color>";
             return;
         }
 
